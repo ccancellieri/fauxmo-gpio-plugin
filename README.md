@@ -33,26 +33,26 @@ below.
 This Fauxmo plugin triggers (and can be triggered by) GPIO pins on a
 Raspberry Pi. The plugin supports the following functionality:
 
--- First, one *output* is required. Two types of output are supported.
+- First, one *output* is required. Two types of output are supported.
 
-   First, an output_pin can be configured in the config file, in which
-   case the output pin will be set to ON when the wemo is ON, and vice
-   versa. The canonical use case for this would be to wire up the
-   output pin to a relay controlling a light.
+  Type one: an output_pin can be configured in the config file, in which
+  case the output pin will be set to ON when the wemo is ON, and vice
+  versa. The canonical use case for this would be to wire up the
+  output pin to a relay controlling a light.
 
-   Second, and alternately, an output_command (one each for ON and OFF
-   states) can be configured in the config file, in which case the
-   appropriate command will be run when the wemo's state is
-   toggled. In some ways this duplicates the CommandLinePlugin found
-   in the [fauxmo-plugins](https://github.com/n8henrie/fauxmo-plugins)
-   project, but there are some differences.
+  Type two: alternately, an output_command (one each for ON and OFF
+  states) can be configured in the config file, in which case the
+  appropriate command will be run when the wemo's state is
+  toggled. In some ways this duplicates the CommandLinePlugin found
+  in the [fauxmo-plugins](https://github.com/n8henrie/fauxmo-plugins)
+  project, but there are some differences.
 
--- Second, and optionally, one *input pin* can be configured. If set,
+- Second, and optionally, one *input pin* can be configured. If set,
 the input_pin specifies a GPIO input which is tied to a physical,
 momentary contact switch. When the switch is pushed, the state of the
 Wemo device will be toggled.
 
--- Third, also optionally, one *notification pin* can be set. This is a
+- Third, also optionally, one *notification pin* can be set. This is a
 GPIO output, and its state will be toggled in various ways to reflect
 the status of the output, the schedule, and whether the input pin is
 currently depressed. The notification pin has the following behavior:
@@ -65,10 +65,10 @@ currently depressed. The notification pin has the following behavior:
        switch depressed after short press interval: on
 
    The state of the schedule is derived through the paired Fauxmo
-   plugin SchedulerPlugin. If this is not configured then it's as
+   plugin SchedulerPlugin. If no schedule is configured then it's as
    if the schedule is always off.
 
--- Finally, if an input_pin is configured, a long_press_interval can
+- Finally, if an input_pin is configured, a long_press_interval can
 also be configured. In this case, if the input_pin is triggered for
 longer than the long_press_interval, then the long_press_action will
 be triggered. This can be used (just like a real Wemo!) to allow one
@@ -79,7 +79,7 @@ See the documentation in fauxmogpioplugin.py for more.
 ## Scheduler Plugin
 
 SchedulerPlugin is a helper plugin: It allows you to add a schedule to
-another Fauxmo plugin. It supports the following functionality:
+another Fauxmo plugin. SchedulerPlugin supports the following functionality:
 
 - Turn on/off at a given time of day (e.g., turn on at 6:05 pm)
 
@@ -95,7 +95,8 @@ the latitude and longitude. This is readily available via Google Maps
 lookup.
 
 Because SchedulerPlugin is itself a Fauxmo plugin instance, the
-schedule itself can be controlled via Alexa. So, for instance, you
+schedule can be controlled via Alexa independent of the plugin being 
+scheduled. So, for instance, you
 might have a FauxmoGPIOPlugin named "Living Room Light", which
 controls a lamp in your living room. Then to control this device, you
 can have a SchedulerPlugin named "Living Room Light Schedule". You can
