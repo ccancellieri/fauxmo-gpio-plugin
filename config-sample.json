@@ -1,0 +1,37 @@
+{
+		"FAUXMO": {
+				"ip_address": "auto"
+		},
+		"PLUGINS": {
+				"FauxmoGpioPlugin": {
+						"path": "/path/to/fauxmo-gpio-plugins/fauxmogpioplugin.py",
+						"DEVICES": [
+								{
+										"name": "Living Room Light",
+										"port": 49915,
+										"output_pin": 5,
+										"input_pin": 24,
+										"input_pull_dir": "Down",
+										"notification_pin": 11,
+										"long_press_interval": 800,
+										"long_press_action": "toggle_paired_device"
+								}
+						]
+				},
+				"SchedulerPlugin": {
+						"path": "/path/to/fauxmo-gpio-plugins/schedulerplugin.py",
+						"DEVICES": [
+								{
+										"name": "Living Room Light Schedule",
+										"port": 49935,
+										"paired_device": "Living Room Light",
+										"timezone": "US/Eastern",
+										"latitude": 40.443657,
+										"longitude": -79.942750,
+										"schedule_events": [ {"trigger": "sunset", "random": 5, "value": true},
+																				 {"trigger": "22:10", "value": false} ]
+								}
+						]
+				}
+		}
+}
