@@ -97,9 +97,9 @@ class PairedFauxmoPlugin(FauxmoPlugin):
             paired_device_name: Required from one of the two paired
                   devices. Gives the name of the other device.
         """
-        if name in __class__._instances:    # noqa
+        if name in PairedFauxmoPlugin._instances:
             raise ValueError(f"Error: Duplicate plugin name {name}")
-        __class__._instances[name] = self   # noqa
+        PairedFauxmoPlugin._instances[name] = self
 
         self.paired_name = paired_device_name
         self.paired_instance = None
@@ -115,7 +115,7 @@ class PairedFauxmoPlugin(FauxmoPlugin):
         if self.paired_instance is not None:
             return self.paired_instance
 
-        cls = __class__  # noqa
+        cls = PairedFauxmoPlugin
 
         if self.paired_name is not None:
             if self.paired_name in cls._instances:

@@ -202,7 +202,7 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
         if self.input_pin:
             self.task = self.loop.create_task(self.gpio_timer())
 
-        __class__._num_instances += 1
+        FauxmoGpioPlugin._num_instances += 1
 
         super().__init__(name=name, port=port)
         logger.info(f"Fauxmo GPIO device {self.name} initialized")
@@ -327,8 +327,8 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
         self.loop_running = False
         self.loop.run_until_complete(self.task)
         self.set_state(False, "shutdown")
-        __class__._num_instances -= 1
-        if (__class__._num_instances == 0):
+        FauxmoGpioPlugin._num_instances -= 1
+        if (FauxmoGpioPlugin._num_instances == 0):
             GPIO.cleanup()
         logger.info(f"{self.name}: Shutdown complete")
 
