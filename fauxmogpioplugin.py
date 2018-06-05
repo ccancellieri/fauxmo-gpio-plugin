@@ -74,7 +74,6 @@ Example config:
   }
 }
 ```
-
 """
 
 import RPi.GPIO as GPIO
@@ -83,14 +82,7 @@ from datetime import datetime, timedelta
 import asyncio
 import shlex
 import subprocess
-
-# the following is needed because fauxmo doesn't add the directory
-# that the plugin lives in to sys.path, so this hacks that in at
-# load-time
-import sys
-import pathlib
-sys.path.append(str(pathlib.Path(__file__).parents[0]))
-from pairedfauxmoplugin import PairedFauxmoPlugin   # noqa
+from pairedfauxmoplugin import PairedFauxmoPlugin
 
 
 def _run_cmd(cmd: str) -> bool:
@@ -107,6 +99,11 @@ def _run_cmd(cmd: str) -> bool:
 
 class FauxmoGpioPlugin(PairedFauxmoPlugin):
     """Fauxmo Plugin for triggering GPIO lines on a Raspberry Pi."""
+
+    # Class variable to track number of running instances. Used to
+    # ensure only the LAST instance calls GPIO.close() to shut down
+    # GPIO access
+    _num_instances = 0
 
     def __init__(self,
                  name: str,
@@ -204,6 +201,8 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
         self.loop_running = True
         if self.input_pin:
             self.task = self.loop.create_task(self.gpio_timer())
+
+        __class__._num_instances += 1
 
         super().__init__(name=name, port=port)
         logger.info(f"Fauxmo GPIO device {self.name} initialized")
@@ -317,6 +316,9 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
         else:
             _run_cmd(self.output_cmds[1])
 
+        if (self.notification_pin):
+            GPIO.output(self.notification_pin, self.state)
+
         newval = "ON" if self.state else "OFF"
         logger.info(f"{self.name}: Turned {newval} on {reason}")
 
@@ -325,7 +327,9 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
         self.loop_running = False
         self.loop.run_until_complete(self.task)
         self.set_state(False, "shutdown")
-        GPIO.cleanup()
+        __class__._num_instances -= 1
+        if (__class__._num_instances == 0):
+            GPIO.cleanup()
         logger.info(f"{self.name}: Shutdown complete")
 
     def on(self) -> bool:
