@@ -1,4 +1,4 @@
-"""Fauxmo plugin that controls a different plugin's schedule state
+"""Fauxmo plugin that controls a different plugin's schedule.
 
 Example config:
 ```
@@ -24,16 +24,16 @@ Example config:
     "SchedulerPlugin": {
       "path": "/path/to/schedulerplugin.py",
       "DEVICES": [
-        {
-          "name": "Bedroom Light Schedule",
-          "port": 49935,
-          "paired_device_name": "Bedroom Light",
-          "timezone": "US/Mountain",
-          "latitude": 40.05436,
-          "longitude": -105.254826,
-          "schedule_events": [ {"trigger": "sunset+20", "value": true},
-                               {"trigger": "22:10", "value": false} ]
-        }
+       {
+        "name": "Bedroom Light Schedule",
+        "port": 49935,
+        "paired_device_name": "Bedroom Light",
+        "timezone": "US/Eastern",
+        "latitude": 40.443657,
+        "longitude": -79.942750,
+        "schedule_events": [{"trigger": "sunset", "random": 5, "value": true},
+                            {"trigger": "22:10", "value": false} ]
+       }
       ]
     }
   }
@@ -48,20 +48,13 @@ from datetime import datetime, timedelta, time
 from random import randint
 import asyncio
 from fauxmo import logger
-
-# the following is needed because fauxmo doesn't add the directory
-# that the plugin lives in to sys.path, so this hacks that in at
-# load-time
-import sys
-import pathlib
-sys.path.append(str(pathlib.Path(__file__).parents[0]))
-from pairedfauxmoplugin import PairedFauxmoPlugin  # noqa
+from pairedfauxmoplugin import PairedFauxmoPlugin
 
 a = Astral()
 
 
 class SchedulerPlugin(PairedFauxmoPlugin):
-    """Plugin for controlling the schedule state of another plugin."""
+    """Plugin for adding a schedule to another plugin."""
 
     def __init__(self,
                  name: str,
