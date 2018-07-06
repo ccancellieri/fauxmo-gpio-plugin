@@ -153,9 +153,9 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
               be recognized.
 
             long_press_action: the action to be taken when a long
-            press occurs. Must be specified if long_press_interval is
-            set. Can be either the special string
-            "toggle_paired_device", or a command to be run.
+              press occurs. Must be specified if long_press_interval
+              is set. Can be either the special string
+              "toggle_paired_device", or a command to be run.
         """
         self.state = False   # True = on, False = off
 
@@ -192,8 +192,8 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
             raise ValueError("long_press_action required but not found!")
 
         # in msec, how fast the notification light should pulse when
-        # the schedule is set
-        self.schedule_notification_interval = 1500
+        # the schedule is set. First number is on time, second is off time
+        self.schedule_notification_interval = (50, 1500)
 
         self.gpio_setup()
 
@@ -263,7 +263,7 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
                 if not press_tm:
                     press_tm = datetime.now()
                     notif_tog_tm = datetime.now()
-                    notif_delta = 40
+                    notif_delta = (40, 80)   # on time in msec, off time
 
                 if (datetime.now() - press_tm) > lp_interval:
                     notif_delta = 0
@@ -293,12 +293,15 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
                     notif_delta = 0
                     local_is_schedule_on = False
 
-            if notif_delta and datetime.now() >= notif_tog_tm:
-                notif_tog_tm = datetime.now() + \
-                               timedelta(milliseconds=notif_delta)
-                if (self.notification_pin):
-                    val = not GPIO.input(self.notification_pin)
-                    GPIO.output(self.notification_pin, val)
+            if (notif_delta and self.notification_pin and
+                datetime.now() >= notif_tog_tm):
+                cur_val = GPIO.input(self.notification_pin)
+                if type(notif_delta) is tuple:
+                    delta = notif_delta[cur_val]
+                else:
+                    delta = notif_delta
+                notif_tog_tm = datetime.now() + timedelta(milliseconds=delta)
+                GPIO.output(self.notification_pin, not cur_val)
 
             await asyncio.sleep(0.02)
 

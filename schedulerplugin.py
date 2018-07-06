@@ -256,10 +256,12 @@ class SchedulerPlugin(PairedFauxmoPlugin):
 
     def on(self) -> bool:
         self.state = True
+        logger.info(f"{self.name}: Turned ON")
         return True
 
     def off(self) -> bool:
         self.state = False
+        logger.info(f"{self.name}: Turned OFF")
         return True
 
     def get_state(self) -> str:
