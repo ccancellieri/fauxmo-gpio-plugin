@@ -167,7 +167,7 @@ class SchedulerPlugin(PairedFauxmoPlugin):
         value = e['value']
 
         # first, try fixed time
-        m = re.fullmatch("([1-2]?[0-9]):([0-5][0-9])(:[0-5][0-9])?", trigger)
+        m = re.fullmatch("([0-2]?[0-9]):([0-5][0-9])(:[0-5][0-9])?", trigger)
         if m:
             hour = int(m.group(1))
             minute = int(m.group(2))
@@ -209,7 +209,7 @@ class SchedulerPlugin(PairedFauxmoPlugin):
                 now = datetime.now(self.timezone).time()
                 for e in self.schedule:
                     if now > e['time'] and not e['processed']:
-                        self.set_pair_state(e['value'], "schedule event")
+                        self.set_pair_state(e['value'])
                         e['processed'] = True
 
             # only sleep 1 sec, otherwise teardown time is too long
@@ -238,8 +238,8 @@ class SchedulerPlugin(PairedFauxmoPlugin):
                 utc_tm = a.sunset_utc(now, self.latitude, self.longitude)
                 loc_tm = utc_tm.astimezone(self.timezone)
             elif e['type'] == 'fixed':
-                loc_tm = datetime.combine(datetime.now(self.timezone).date(),
-                                          e['base_time'], self.timezone)
+                loc_tm = datetime.combine(now.date(), e['base_time'],
+                                          self.timezone)
             else:
                 raise ValueError(f"Illegal schedule type {e['type']}")
 
