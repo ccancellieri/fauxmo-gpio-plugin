@@ -82,6 +82,8 @@ from datetime import datetime, timedelta
 import asyncio
 import shlex
 import subprocess
+from time import sleep
+
 from pairedfauxmoplugin import PairedFauxmoPlugin
 
 
@@ -108,6 +110,7 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
     def __init__(self,
                  name: str,
                  port: int,
+                 type: str = None,
                  output_pin: int = None,
                  output_cmds: list = None,
                  input_pin: int = None,
@@ -162,6 +165,11 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
         # Don't need to validate the output_pin, input_pin etc;
         # RPi.GPIO will throw ValueError if a pin is illegal
 
+        if ( type == "toggle"):
+            self.toggle = True
+        else:
+            self.toggle = False
+
         self.output_pin = output_pin
         self.output_cmds = output_cmds
 
@@ -210,7 +218,8 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
     def gpio_setup(self):
         "Set up the GPIO for the pins we're using"
 
-        GPIO.setmode(GPIO.BOARD)
+# TODO CHECKME!!!        GPIO.setmode(GPIO.BOARD)
+        GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
 
         # Output pin
@@ -337,13 +346,32 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
 
     def on(self) -> bool:
         "Run the on command.  Returns true if command succeeded"
-        self.set_state(True, "wemo command")
+        if (self.toggle):
+             return self._toggle(True)
+        else:
+             self.set_state(True, "wemo command")
         return True
 
     def off(self) -> bool:
         "Run the on command.  Returns true if command succeeded"
-        self.set_state(False, "wemo command")
+        if (self.toggle):
+             return self._toggle(False)
+        else:
+             self.set_state(False, "wemo command")
         return True
+
+    def _toggle(self, state: bool) -> bool:
+        "Run the TOGGLE command.  Returns true if command succeeded"
+        if (self.state == state):
+             return False
+        GPIO.output(self.output_pin, True)
+        logger.info(f"{self.name}: Turned {not self.state}")
+        sleep(0.2)
+        GPIO.output(self.output_pin, False)
+        logger.info(f"{self.name}: Turned again to {self.state}")
+        self.state = not self.state
+        return True
+
 
     def get_state(self) -> str:
         "Get device state. Returns one of the strings 'on' or 'off'"
