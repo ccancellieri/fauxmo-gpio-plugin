@@ -4,32 +4,62 @@
 		},
 		"PLUGINS": {
 				"FauxmoGpioPlugin": {
-						"path": "/path/to/fauxmo-gpio-plugins/fauxmogpioplugin.py",
+						"path": "/home/pi/fauxmo-gpio-plugin/fauxmogpioplugin.py",
 						"DEVICES": [
 								{
-										"name": "Living Room Light",
-										"port": 49915,
-										"output_pin": 5,
-										"input_pin": 24,
-										"input_pull_dir": "Down",
-										"notification_pin": 11,
-										"long_press_interval": 800,
-										"long_press_action": "toggle_paired_device"
-								}
-						]
-				},
-				"SchedulerPlugin": {
-						"path": "/path/to/fauxmo-gpio-plugins/schedulerplugin.py",
-						"DEVICES": [
+										"name": "Luce 5",
+										"state": 1,
+										"port": 49905,
+										"type": "toggle",
+										"output_pin": 5
+								},
 								{
-										"name": "Living Room Light Schedule",
-										"port": 49935,
-										"paired_device": "Living Room Light",
-										"timezone": "US/Eastern",
-										"latitude": 40.443657,
-										"longitude": -79.942750,
-										"schedule_events": [ {"trigger": "sunset", "random": 5, "value": true},
-																				 {"trigger": "22:10", "value": false} ]
+										"name": "Luce 6",
+										"state": 1,
+										"port": 49906,
+										"type": "toggle",
+										"output_pin": 6
+								},
+								{
+										"name": "Luce 13",
+										"state": 1,
+										"port": 49913,
+										"type": "toggle",
+										"output_pin": 13
+								},
+								{
+										"name": "Luce 19",
+										"state": 1,
+										"port": 49919,
+										"type": "toggle",
+										"output_pin": 19
+								},
+								{
+										"name": "Luce 26",
+										"state": 1,
+										"port": 49926,
+										"type": "toggle",
+										"output_pin": 26
+								},
+								{
+										"name": "Luce 16",
+										"state": 1,
+										"port": 49916,
+										"type": "toggle",
+										"output_pin": 16
+								},
+								{
+										"name": "Luce 20",
+										"state": 1,
+										"port": 49920,
+										"type": "toggle",
+										"output_pin": 20
+								},
+								{
+										"name": "Riscaldamento",
+										"state": 1,
+										"port": 49921,
+										"output_pin": 21
 								}
 						]
 				}

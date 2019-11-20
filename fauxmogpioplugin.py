@@ -111,6 +111,7 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
                  name: str,
                  port: int,
                  type: str = None,
+                 state: int = None,
                  output_pin: int = None,
                  output_cmds: list = None,
                  input_pin: int = None,
@@ -160,12 +161,15 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
               is set. Can be either the special string
               "toggle_paired_device", or a command to be run.
         """
-        self.state = False   # True = on, False = off
+        if ( state is not None ):
+            self.state = state
+        else:
+            self.state = False   # True = on, False = off
 
         # Don't need to validate the output_pin, input_pin etc;
         # RPi.GPIO will throw ValueError if a pin is illegal
 
-        if ( type == "toggle"):
+        if ( type == "toggle" ):
             self.toggle = True
         else:
             self.toggle = False
@@ -347,7 +351,7 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
     def on(self) -> bool:
         "Run the on command.  Returns true if command succeeded"
         if (self.toggle):
-             return self._toggle(True)
+             self._toggle(True)
         else:
              self.set_state(True, "wemo command")
         return True
@@ -355,26 +359,23 @@ class FauxmoGpioPlugin(PairedFauxmoPlugin):
     def off(self) -> bool:
         "Run the on command.  Returns true if command succeeded"
         if (self.toggle):
-             return self._toggle(False)
+             self._toggle(False)
         else:
              self.set_state(False, "wemo command")
         return True
 
-    def _toggle(self, state: bool) -> bool:
+    def _toggle(self, state: bool) -> None:
         "Run the TOGGLE command.  Returns true if command succeeded"
-        if (self.state == state):
-             return False
-        GPIO.output(self.output_pin, True)
-        logger.info(f"{self.name}: Turned {not self.state}")
-        sleep(0.2)
         GPIO.output(self.output_pin, False)
-        logger.info(f"{self.name}: Turned again to {self.state}")
-        self.state = not self.state
-        return True
-
+        logger.info(f"{self.name}: Turned to --> {not self.state}")
+        sleep(0.1)
+        GPIO.output(self.output_pin, True)
+        logger.info(f"{self.name}: Turned back to --> {self.state}")
+        self.state = state
 
     def get_state(self) -> str:
         "Get device state. Returns one of the strings 'on' or 'off'"
+#        return "unknown"
         if self.state:
             return "on"
         else:
