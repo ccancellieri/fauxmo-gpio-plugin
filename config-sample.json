@@ -8,48 +8,56 @@
 						"DEVICES": [
 								{
 										"name": "Luce 5",
+										"state": 1,
 										"port": 49905,
 										"type": "toggle",
 										"output_pin": 5
 								},
 								{
 										"name": "Luce 6",
+										"state": 1,
 										"port": 49906,
 										"type": "toggle",
 										"output_pin": 6
 								},
 								{
 										"name": "Luce 13",
+										"state": 1,
 										"port": 49913,
 										"type": "toggle",
 										"output_pin": 13
 								},
 								{
 										"name": "Luce 19",
+										"state": 1,
 										"port": 49919,
 										"type": "toggle",
 										"output_pin": 19
 								},
 								{
 										"name": "Luce 26",
+										"state": 1,
 										"port": 49926,
 										"type": "toggle",
 										"output_pin": 26
 								},
 								{
 										"name": "Luce 16",
+										"state": 1,
 										"port": 49916,
 										"type": "toggle",
 										"output_pin": 16
 								},
 								{
 										"name": "Luce 20",
+										"state": 1,
 										"port": 49920,
 										"type": "toggle",
 										"output_pin": 20
 								},
 								{
 										"name": "Riscaldamento",
+										"state": 1,
 										"port": 49921,
 										"output_pin": 21
 								}
